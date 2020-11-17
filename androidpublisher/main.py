@@ -66,7 +66,6 @@ def upload(
             packageName=package_name,
         )
         result = edit_request.execute()
-        typer.echo(result)
         edit_id = result["id"]
 
         aab_response = (
@@ -80,9 +79,9 @@ def upload(
             .execute()
         )
 
-        typer.echo(
-            f"Version code {aab_response['versionCode']} has been uploaded",
-        )
+        version_code = str(aab_response["versionCode"])
+
+        typer.echo(f"Version code {version_code} has been uploaded")
 
         track_response = (
             service.edits()
@@ -94,8 +93,8 @@ def upload(
                 body={
                     "releases": [
                         {
-                            "name": "My first API release",
-                            "versionCodes": [str(aab_response["versionCode"])],
+                            "name": f"Version {version_code}",
+                            "versionCodes": [version_code],
                             "status": "completed",
                         }
                     ]
@@ -104,10 +103,10 @@ def upload(
             .execute()
         )
 
-        typer.echo(
-            f"Track {track_response['track']} is set with releases: \
-            {track_response['releases']}",
-        )
+        track_message = f"Track {track_response['track']} is set with "
+        track_message += f"releases: {track_response['releases']}"
+
+        typer.echo(track_message)
 
         commit_request = (
             service.edits()
@@ -121,7 +120,6 @@ def upload(
         typer.echo(f"Edit \"{commit_request['id']}\" has been committed")
 
     except AccessTokenRefreshError:
-        typer.echo(
-            "The credentials have been revoked or expired, please \
-            re-run the application to re-authorize",
-        )
+        error_message = "The credentials have been revoked or expired, "
+        error_message += "please re-run the application to re-authorize"
+        typer.echo(error_message)
