@@ -131,3 +131,7 @@ dmypy.json
 # Visual Studio Code setup
 .vscode
 jsons
+
+# File internal
+*.aab
+*.json
