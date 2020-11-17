@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "androidpublisher"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["leynier <leynier41@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-rick-portal-gun = "androidpublisher.main:app"
+androidpublisher = "androidpublisher.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.7"
