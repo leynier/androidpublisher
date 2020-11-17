@@ -1,3 +1,5 @@
+from mimetypes import add_type
+
 import typer
 from apiclient.discovery import build
 from httplib2 import Http
@@ -11,6 +13,7 @@ def upload(
     track: str = "internal",
     json_key: str = "credential.json",
 ):
+    add_type("application/octet-stream", ".aab")
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
         json_key,
         scopes="https://www.googleapis.com/auth/androidpublisher",

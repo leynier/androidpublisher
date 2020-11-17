@@ -1,5 +1,4 @@
 from enum import Enum
-from mimetypes import add_type
 from pathlib import Path
 
 import typer
@@ -16,7 +15,6 @@ class Track(str, Enum):
 
 
 app = typer.Typer()
-add_type("application/octet-stream", ".aab")
 
 
 @app.callback()
