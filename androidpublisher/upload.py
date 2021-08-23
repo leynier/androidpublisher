@@ -1,7 +1,8 @@
+from json import load
 from mimetypes import add_type
 
 import typer
-from apiclient.discovery import build
+from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client.client import AccessTokenRefreshError
 from oauth2client.service_account import ServiceAccountCredentials
@@ -14,8 +15,11 @@ def upload(
     json_key: str = "credential.json",
 ):
     add_type("application/octet-stream", ".aab")
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        json_key,
+    json_file = open(json_key)
+    json_data = load(json_file)
+    json_file.close()
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+        json_data,
         scopes="https://www.googleapis.com/auth/androidpublisher",
     )
     http = Http()
@@ -24,7 +28,7 @@ def upload(
     service = build("androidpublisher", "v3", http=http)
 
     try:
-        edit_request = service.edits().insert(
+        edit_request = service.edits().insert(  # type: ignore
             body={},
             packageName=package_name,
         )
@@ -32,7 +36,7 @@ def upload(
         edit_id = result["id"]
 
         aab_response = (
-            service.edits()
+            service.edits()  # type: ignore
             .bundles()
             .upload(
                 editId=edit_id,
@@ -47,7 +51,7 @@ def upload(
         typer.echo(f"Version code {version_code} has been uploaded")
 
         track_response = (
-            service.edits()
+            service.edits()  # type: ignore
             .tracks()
             .update(
                 editId=edit_id,
@@ -72,7 +76,7 @@ def upload(
         typer.echo(track_message)
 
         commit_request = (
-            service.edits()
+            service.edits()  # type: ignore
             .commit(
                 editId=edit_id,
                 packageName=package_name,
