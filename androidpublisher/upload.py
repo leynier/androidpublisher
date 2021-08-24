@@ -15,9 +15,10 @@ def upload(
     json_key: str = "credential.json",
 ):
     add_type("application/octet-stream", ".aab")
-    json_file = open(json_key)
+    json_file = open(json_key, encoding="utf-8")
     print("=======================================================")
     print(json_file.read())
+    print("=======================================================")
     json_data = load(json_file)
     json_file.close()
     credentials = ServiceAccountCredentials.from_json_keyfile_dict(
