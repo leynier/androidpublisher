@@ -1,3 +1,4 @@
+from base64 import b64decode
 from json import loads
 from mimetypes import add_type
 from typing import Optional
@@ -18,7 +19,7 @@ def upload(
 ):
     add_type("application/octet-stream", ".aab")
     if json_content:
-        content_file = json_content
+        content_file = b64decode(json_content.encode("ascii")).decode("ascii")
     else:
         json_file = open(json_key, encoding="utf-8")
         content_file = json_file.read()
