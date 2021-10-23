@@ -1,7 +1,7 @@
 from enum import Enum
 from pathlib import Path
 
-import typer
+from typer import Option, Typer
 
 from .upload import upload
 
@@ -14,7 +14,7 @@ class Track(str, Enum):
     rollout = "rollout"
 
 
-app = typer.Typer()
+app = Typer()
 
 
 @app.callback()
@@ -27,7 +27,7 @@ def callback():
 @app.command(name="upload")
 def upload_command(
     package_name: str,
-    aab_file: Path = typer.Option(
+    aab_file: Path = Option(
         "app.aab",
         exists=True,
         file_okay=True,
@@ -36,8 +36,8 @@ def upload_command(
         readable=True,
         resolve_path=True,
     ),
-    track: Track = typer.Option(Track.internal),
-    json_key: Path = typer.Option(
+    track: Track = Option(Track.internal),
+    json_key: Path = Option(
         "credential.json",
         exists=True,
         file_okay=True,

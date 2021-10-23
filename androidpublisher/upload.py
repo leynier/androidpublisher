@@ -1,11 +1,11 @@
-from json import load
+from json import loads
 from mimetypes import add_type
 
-import typer
 from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client.client import AccessTokenRefreshError
 from oauth2client.service_account import ServiceAccountCredentials
+from typer import echo
 
 
 def upload(
@@ -16,11 +16,12 @@ def upload(
 ):
     add_type("application/octet-stream", ".aab")
     json_file = open(json_key, encoding="utf-8")
-    print("=======================================================")
-    print(json_file.read())
-    print("=======================================================")
-    json_data = load(json_file)
+    content_file = json_file.read()
     json_file.close()
+    print("= credential.json =====================================")
+    print(content_file)
+    print("=======================================================")
+    json_data = loads(content_file)
     credentials = ServiceAccountCredentials.from_json_keyfile_dict(
         json_data,
         scopes="https://www.googleapis.com/auth/androidpublisher",
@@ -51,7 +52,7 @@ def upload(
 
         version_code = str(aab_response["versionCode"])
 
-        typer.echo(f"Version code {version_code} has been uploaded")
+        echo(f"Version code {version_code} has been uploaded")
 
         track_response = (
             service.edits()  # type: ignore
@@ -76,7 +77,7 @@ def upload(
         track_message = f"Track {track_response['track']} is set with "
         track_message += f"releases: {track_response['releases']}"
 
-        typer.echo(track_message)
+        echo(track_message)
 
         commit_request = (
             service.edits()  # type: ignore
@@ -87,9 +88,9 @@ def upload(
             .execute()
         )
 
-        typer.echo(f"Edit \"{commit_request['id']}\" has been committed")
+        echo(f"Edit \"{commit_request['id']}\" has been committed")
 
     except AccessTokenRefreshError:
         error_message = "The credentials have been revoked or expired, "
         error_message += "please re-run the application to re-authorize"
-        typer.echo(error_message)
+        echo(error_message)
