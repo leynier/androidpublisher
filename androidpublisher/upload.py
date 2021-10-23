@@ -1,5 +1,6 @@
 from json import loads
 from mimetypes import add_type
+from typing import Optional
 
 from googleapiclient.discovery import build
 from httplib2 import Http
@@ -13,11 +14,15 @@ def upload(
     aab_file: str = "app.aab",
     track: str = "internal",
     json_key: str = "credential.json",
+    json_content: Optional[str] = None,
 ):
     add_type("application/octet-stream", ".aab")
-    json_file = open(json_key, encoding="utf-8")
-    content_file = json_file.read()
-    json_file.close()
+    if json_content:
+        content_file = json_content
+    else:
+        json_file = open(json_key, encoding="utf-8")
+        content_file = json_file.read()
+        json_file.close()
     print("= credential.json =====================================")
     print(content_file)
     print("=======================================================")
